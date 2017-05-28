@@ -9,11 +9,13 @@ using System.Windows.Forms;
 
 namespace Checklist
 {
-	public partial class Form1 : Form
+	public partial class Main : Form
 	{
-		public Form1()
+		private CustomJumpList list;
+		public Main()
 		{
 			InitializeComponent();
+			list = new CustomJumpList(this.Handle);
 		}
 	}
 }
