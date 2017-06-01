@@ -1,8 +1,5 @@
 ﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System;	   
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System.IO;
 using System.Reflection;
@@ -21,7 +18,6 @@ namespace Checklist
 		public CustomJumpList(IntPtr windowHandle)
 		{
 			list = JumpList.CreateJumpListForIndividualWindow(TaskbarManager.Instance.ApplicationId, windowHandle);
-			//list.KnownCategoryToDisplay = JumpListKnownCategoryType.Recent;
 			list.KnownCategoryToDisplay = JumpListKnownCategoryType.Neither;
 			BuildList();
 		}
@@ -39,6 +35,7 @@ namespace Checklist
 		{
 			JumpListCustomCategory cateTasks = new JumpListCustomCategory("Tasks");
 			string location = Assembly.GetEntryAssembly().Location;
+			Console.WriteLine(location);
 			IconReference iconChecked = new IconReference(Path.Combine(Path.GetDirectoryName(location), "res\\checked.ico"), 0);
 			IconReference iconUnchecked = new IconReference(Path.Combine(Path.GetDirectoryName(location), "res\\unchecked.ico"), 0);
 			IconReference iconAdd = new IconReference(Path.Combine(Path.GetDirectoryName(location), "res\\add.ico"), 0);
@@ -90,5 +87,4 @@ namespace Checklist
 			list.Refresh();
 		}
 	}
-
 }

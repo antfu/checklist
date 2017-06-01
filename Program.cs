@@ -8,15 +8,22 @@ namespace Checklist
 {
 	static class Program
 	{
+		public static string MUTEX_ID = "Antfu.Checklist";
+
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
-		static void Main()
+		static void Main(string[] args)
 		{
 			bool firstInstance = false;
 
-			Mutex mtx = new Mutex(true, "Antfu.Checklist", out firstInstance);
+			Mutex mtx = new Mutex(true, MUTEX_ID, out firstInstance);
+
+			if (args.Length != 0)
+				Log.log("Starting with arguments: " + String.Join(" ", args));
+			else
+				Log.log("Starting");
 
 			if (firstInstance)
 			{
@@ -26,10 +33,11 @@ namespace Checklist
 			}
 			else
 			{
+				Log.log("Another instance is running, sending message...");
 				// Send argument to running window
 				HandleCmdLineArgs();
 			}
-		}			  
+		}
 
 		public static void HandleCmdLineArgs()
 		{
@@ -38,7 +46,7 @@ namespace Checklist
 				switch (Environment.GetCommandLineArgs()[1])
 				{
 					case "-1":
-						WindowsMessageHelper.SendMessage("Antfu.Checklist", WindowsMessageHelper.ClearHistoryArg);
+						WindowsMessageHelper.SendMessage(MUTEX_ID, WindowsMessageHelper.ClearHistoryArg);
 						break;
 				}
 			}

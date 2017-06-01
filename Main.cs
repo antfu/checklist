@@ -12,9 +12,14 @@ namespace Checklist
 	public partial class Main : Form
 	{
 		private CustomJumpList list;
+		private Storage storage;
 		public Main()
 		{
 			InitializeComponent();
+			storage = new Storage();
+			storage.load();
+			storage.data["counter"] = (int)storage.data["counter"] + 1;
+			storage.Save();
 			list = new CustomJumpList(this.Handle);
 		}
 	}
