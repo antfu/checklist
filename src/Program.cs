@@ -14,13 +14,14 @@ namespace Checklist
 		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
-		static void Main(string[] args)
+		static void Main()
 		{
 			bool firstInstance = false;
 
 			Mutex mtx = new Mutex(true, MUTEX_ID, out firstInstance);
 
-			if (args.Length != 0)
+			string[] args = Environment.GetCommandLineArgs();
+			if (args.Length > 1)
 				Log.log("Starting with arguments: " + String.Join(" ", args));
 			else
 				Log.log("Starting");

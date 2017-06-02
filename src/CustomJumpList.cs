@@ -19,28 +19,19 @@ namespace Checklist
 		{
 			list = JumpList.CreateJumpListForIndividualWindow(TaskbarManager.Instance.ApplicationId, windowHandle);
 			list.KnownCategoryToDisplay = JumpListKnownCategoryType.Neither;
-			BuildList();
 		}
-
-		public void AddToRecent(string destination)
-		{
-			//list.AddToRecent(destination);
-			list.Refresh();
-		}
-
-		/// <summary>
-		/// Builds the Jumplist
-		/// </summary>
-		private void BuildList()
+	   	   
+		public void UpdateList(Storage storage)
 		{
 			JumpListCustomCategory cateTasks = new JumpListCustomCategory("Tasks");
 			string location = Assembly.GetEntryAssembly().Location;
+			string dir = Path.GetDirectoryName(location);
 			Console.WriteLine(location);
-			IconReference iconChecked = new IconReference(Path.Combine(Path.GetDirectoryName(location), "res\\checked.ico"), 0);
-			IconReference iconUnchecked = new IconReference(Path.Combine(Path.GetDirectoryName(location), "res\\unchecked.ico"), 0);
-			IconReference iconAdd = new IconReference(Path.Combine(Path.GetDirectoryName(location), "res\\add.ico"), 0);
-			IconReference iconRefresh = new IconReference(Path.Combine(Path.GetDirectoryName(location), "res\\refresh.ico"), 0);
-			IconReference iconOption = new IconReference(Path.Combine(Path.GetDirectoryName(location), "res\\option.ico"), 0);
+			IconReference iconChecked = new IconReference(Path.Combine(dir, "res\\checked.ico"), 0);
+			IconReference iconUnchecked = new IconReference(Path.Combine(dir, "res\\unchecked.ico"), 0);
+			IconReference iconAdd = new IconReference(Path.Combine(dir, "res\\add.ico"), 0);
+			IconReference iconRefresh = new IconReference(Path.Combine(dir, "res\\refresh.ico"), 0);
+			IconReference iconOption = new IconReference(Path.Combine(dir, "res\\option.ico"), 0);
 
 			cateTasks.AddJumpListItems(new JumpListLink(location, "Item1")
 			{
@@ -68,17 +59,17 @@ namespace Checklist
 			cateActions.AddJumpListItems(new JumpListLink(location, "New Task")
 			{
 				IconReference = iconAdd,
-				Arguments = "A0"
+				Arguments = "/A0"
 			});
-			cateActions.AddJumpListItems(new JumpListLink(location, "Refresh")
+			cateActions.AddJumpListItems(new JumpListLink(location, string.Format("Refresh ({0})",storage.data["counter"]))
 			{
 				IconReference = iconRefresh,
-				Arguments = "A1"
+				Arguments = "/A1"
 			});
 			cateActions.AddJumpListItems(new JumpListLink(location, "Options")
 			{
 				IconReference = iconOption,
-				Arguments = "A2"
+				Arguments = "/A2"
 			});
 
 
