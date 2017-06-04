@@ -6,11 +6,13 @@ using System.Text;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using log4net;
 
 namespace Checklist
 {
 	class Storage
 	{
+
 		public const string DATA_PATH = @".\data.json";
 		private const string JSON_PRESET = @"
 {
@@ -18,18 +20,19 @@ namespace Checklist
 	'checklist':[]
 }";
 
+		private ILog Log = LogManager.GetLogger("Storage");
 		public JObject data;
 		public Storage()
 		{
 
 		}
 
-		public void load()
+		public Storage Load()
 		{
 			string json = JSON_PRESET;
 			if (!File.Exists(DATA_PATH))
 			{
-				Log.log("Data not exists, load from preset.");
+				Log.Info("Data not exists, load from preset.");
 			}
 			else
 			{
@@ -44,15 +47,16 @@ namespace Checklist
 			}
 			catch (Exception e)
 			{
-				Log.log(e.StackTrace);
+				Log.Error(e.StackTrace);
 			}
+			return this;
 		}
 
 		public void Save()
 		{
 			if (data != null)
 			{
-				Log.log("Saving data");
+				Log.Info("Saving data");
 				using (var file = File.CreateText(DATA_PATH))
 				{
 					file.Write(data.ToString());
