@@ -11,36 +11,47 @@ using log4net;
 
 namespace Checklist
 {
-	/// <summary>
-	/// Interaction logic for App.xaml
-	/// </summary>
-	public partial class App : Application
-	{
-		private ILog Log = LogManager.GetLogger("App");
-		protected override void OnStartup(StartupEventArgs e)
-		{
-			log4net.Config.XmlConfigurator.Configure();
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
+    public partial class App : Application
+    {
+        private ILog Log = LogManager.GetLogger("App");
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            log4net.Config.XmlConfigurator.Configure();
 
-			Log.Info("Starting " + string.Join(" ", e.Args));
+            Log.Info("Starting " + string.Join(" ", e.Args));
 
-			if (e.Args.Count() > 0)
-			{
-				MessageBox.Show("argument: "+ string.Join(" ", e.Args));
-				Shutdown();
-			}
+            string location = Assembly.GetEntryAssembly().Location;
+            string pwd = Path.GetDirectoryName(location);
+            var manager = new JumplistManager();
+            var storage = manager.loadStorage();
 
-			string location = Assembly.GetEntryAssembly().Location;
-			string pwd = Path.GetDirectoryName(location);
+            if (e.Args.Count() > 0)
+            {
+                //MessageBox.Show("argument: "+ string.Join(" ", e.Args));
+                foreach (string arg in e.Args)
+                {
+                    bool success = ActionHandler.handle(arg, storage);
+                    if (success)
+                    {
+                        storage.Save();
+                        manager.updateJumplist();
+                    }
+                }
+                Shutdown();
+            }
+            else
+            {
+                storage.data["counter"] = (int)storage.data["counter"] + 1;
+                storage.Save();
+                manager.updateJumplist();
 
-			var manager = new JumplistManager();
-			var storage = manager.loadStorage();
-			storage.data["counter"] = (int)storage.data["counter"] + 1;
-			storage.Save();
-			manager.updateJumplist();
-
-			// There should be a UI guide
-			MessageBox.Show("This program intended to work with Taskbar Jumplist. \n\nPlease pin Checklist to taskbar.");
-			Shutdown();
-		}
-	}
+                // There should be a UI guide
+                MessageBox.Show("This program intended to work with Taskbar Jumplist. \n\nPlease pin Checklist to taskbar.");
+            }
+            Shutdown();
+        }
+    }
 }
