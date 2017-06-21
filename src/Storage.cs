@@ -14,12 +14,8 @@ namespace Checklist
     class Storage
     {
 
-        public string DATA_PATH = @"data.json";
-        private const string JSON_PRESET = @"
-{
-	'counter': 0,
-	'checklist':[]
-}";
+        private string DATA_PATH = @"data.json";
+        private const string JSON_PRESET = @"{'checklist':[]}";
 
         private ILog Log = LogManager.GetLogger("Storage");
         public JObject data;

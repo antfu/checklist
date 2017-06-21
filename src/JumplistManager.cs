@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Shell;
 
@@ -43,9 +45,9 @@ namespace Checklist
 
             jumpList.JumpItems.Add(new JumpTask
             {
-                Title = "Counter " + storage.data["counter"],
-                Arguments = "/counter",
-                Description = "Setup counter",
+                Title = "Refresh",
+                Arguments = "/refresh",
+                Description = "Refresh",
                 CustomCategory = "Actions",
                 IconResourcePath = Path.Combine(pwd, "res/refresh.ico"),
                 ApplicationPath = Assembly.GetEntryAssembly().CodeBase
@@ -61,8 +63,12 @@ namespace Checklist
                 ApplicationPath = Assembly.GetEntryAssembly().CodeBase
             });
 
-            //TODO: CheckItems
+            //TODO: Sorts
+            List<JObject> items = new List<JObject>();
             foreach (JObject i in storage.Checklist)
+                items.Add(i);
+            items = items.OrderBy(o => o["state"]).ThenBy(o => o["time_create"]).ToList();
+            foreach (JObject i in items)
             {
                 int state = (int)i["state"];
                 string icon_path = state == 0 ? "res/unchecked.ico" : "res/checked.ico";

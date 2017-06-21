@@ -9,15 +9,18 @@ namespace Checklist
 {
     class ActionHandler
     {
+        private static List<string> preprocess(string argument)
+        {
+            return new List<string>(argument.ToLower().Trim().TrimStart('/').Split(':'));
+        }
         public static bool handle(string argument, Storage storage)
         {
-            argument = argument.ToLower().Trim().TrimStart('/');
-            if (argument.Length <= 0)
-                return false;
+            var parts = preprocess(argument);
 
-            if (argument.StartsWith("i:"))
+            // Checklist pressed
+            if (parts.Count == 2 && parts[0] == "i")
             {
-                string id = argument.Split(':')[1];
+                string id = parts[1];
                 bool found = false;
 
                 // Find item by id
@@ -31,6 +34,9 @@ namespace Checklist
                     }
                 }
                 return found;
+            }
+            else if (parts.Count == 1 && parts[0] == "add")
+            {
             }
 
             return false;
