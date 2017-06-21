@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -62,23 +63,20 @@ namespace Checklist
 			});
 
 			//TODO: CheckItems
-			jumpList.JumpItems.Add(new JumpTask
-			{
-				Title = "Item 1",
-				Arguments = "/i:f8sd2", // This should be item ID			  
-				CustomCategory = "Tasks",
-				IconResourcePath = Path.Combine(pwd, "res/unchecked.ico"),
-				ApplicationPath = Assembly.GetEntryAssembly().CodeBase
-			});
+			JArray items = storage.data["checklist"] as JArray;
 
-			jumpList.JumpItems.Add(new JumpTask
-			{
-				Title = "Item 2",
-				Arguments = "/i:2asdn",
-				CustomCategory = "Tasks",
-				IconResourcePath = Path.Combine(pwd, "res/checked.ico"),
-				ApplicationPath = Assembly.GetEntryAssembly().CodeBase
-			});
+			foreach (JObject i in items) {
+				int state = (int)i["state"];
+				string icon_path = state == 0 ? "res/unchecked.ico" : "res/checked.ico";
+				jumpList.JumpItems.Add(new JumpTask
+				{
+					Title = (string)i["text"],
+					Arguments = "/i:" + (string)i["id"] , // This should be item ID			  
+					CustomCategory = "Tasks",
+					IconResourcePath = Path.Combine(pwd, icon_path),
+					ApplicationPath = Assembly.GetEntryAssembly().CodeBase
+				});
+			}
 
 			JumpList.SetJumpList(App.Current, jumpList);
 		}
